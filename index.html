@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Quiz</title>
+    <!-- Font Awesome -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Fonts -->
+<link
+  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  rel="stylesheet"
+/>
+<!-- MDB -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.min.css"
+  rel="stylesheet"
+/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .quiz-container, .history-container {
+            background-color: white;
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            flex: 1;
+           
+        }
+        .quiz-container {
+            text-align: center;
+        }
+        .question {
+            font-size: 72px;
+        }
+        #answer {
+            Width:100px;
+            margin: auto auto;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #score {
+            margin-top: 20px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- MDB -->
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.umd.min.js"
+></script>
+    <div class="container">
+        <div class="quiz-container">
+            <div class="question" id="question" ></div>
+            <input type="text" id="answer" class="form-control mb-2" placeholder="">
+            <button type="button" class="btn btn-primary" onclick="checkAnswer()">Submit</button>
+      
+
+        </div>
+        
+        <div class="history-container">
+            
+            <div id="history"></div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            "Question": [
+                "あ", "い", "う", "え", "お",
+                "か", "き", "く", "け", "こ",
+                "さ", "し", "す", "せ", "そ",
+                "た", "ち", "つ", "て", "と",
+                "な", "に", "ぬ", "ね", "の",
+                "は", "ひ", "ふ", "へ", "ほ",
+                "ま", "み", "む", "め", "も",
+                "や", "ゆ", "よ",
+                "ら", "り", "る", "れ", "ろ",
+                "わ", "を"
+            ],
+            "Answer": [
+                "a", "i", "u", "e", "o",
+                "ka", "ki", "ku", "ke", "ko",
+                "sa", "shi", "su", "se", "so",
+                "ta", "chi", "tsu", "te", "to",
+                "na", "ni", "nu", "ne", "no",
+                "ha", "hi", "fu", "he", "ho",
+                "ma", "mi", "mu", "me", "mo",
+                "ya", "yu", "yo",
+                "ra", "ri", "ru", "re", "ro",
+                "wa", "wo"
+            ]
+        };
+
+        let currentQuestion;
+        let correctCount = 0;
+        let totalCount = 0;
+        let history = [];
+
+        function nextQuestion() {
+            const index = Math.floor(Math.random() * quizData.Question.length);
+            currentQuestion = {
+                hiragana: quizData.Question[index],
+                romaji: quizData.Answer[index]
+            };
+            document.getElementById('question').textContent = currentQuestion.hiragana;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('answer').focus(); // Auto-focus the input field
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.toLowerCase().trim();
+            const correctAnswer = currentQuestion.romaji.toLowerCase();
+
+            totalCount++;
+            let isCorrect = false;
+            if (userAnswer === correctAnswer) {
+                correctCount++;
+                isCorrect = true;
+            } else {
+               
+
+            }
+
+
+
+            history.unshift({
+                question: currentQuestion.hiragana,
+                userAnswer: userAnswer,
+                correctAnswer: correctAnswer,
+                isCorrect: isCorrect
+            });
+
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            updateHistory();
+
+            setTimeout(nextQuestion, 100);
+        }
+
+        function updateHistory() {
+            const historyElement = document.getElementById('history');
+            historyElement.innerHTML = '';
+            history.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'history-item';
+                itemElement.innerHTML = `
+                    <span>${item.question}</span>
+                    <span class="${item.isCorrect ? 'correct' : 'incorrect'}">
+                        ${item.userAnswer} ${item.isCorrect ? '✓' : '✗'} (${item.correctAnswer})
+                    </span>
+                `;
+                historyElement.appendChild(itemElement);
+            });
+        }
+
+        // Add event listener for Enter key
+        document.getElementById('answer').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        nextQuestion();
+    </script>
+</body>
+</html>

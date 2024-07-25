@@ -1,206 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiragana practice</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <!-- Font Awesome -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  rel="stylesheet"
-/>
-<!-- Google Fonts -->
-<link
-  href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-  rel="stylesheet"
-/>
-<!-- MDB -->
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.min.css"
-  rel="stylesheet"
-/>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            padding: 16px;
-            box-sizing: border-box;
-            background-color: #f0f0f0;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-            max-width: 1000px;
-            width: 100%;
-        }
-        .quiz-container, .history-container {
-            background-color: white;
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            flex: 1;
-           
-        }
-        .quiz-container {
-            text-align: center;
-        }
-        .question {
-            font-size: 72px;
-        }
-        #answer {
-            Width:100px;
-            margin: auto auto;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        #score {
-            margin-top: 20px;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            padding: 4px;
-            border-bottom: 1px solid #eee;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hiragana Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background-color: #1a202c;
+      color: #fff;
+    }
 
-        .correct {
-            color: green;
-        }
-        .incorrect {
-            color: red;
-        }
-    </style>
+    .correct {
+      color: #48bb78;
+    }
+
+    .incorrect {
+      color: #f56565;
+    }
+
+    .chart-cell {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    .chart-cell small {
+      display: block;
+      font-size: 1rem;
+    }
+  </style>
 </head>
-<body>
-    <!-- MDB -->
-<script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.3.2/mdb.umd.min.js"
-></script>
-    <div class="container">
-        <div class="quiz-container">
-            <div class="question" id="question" ></div>
-            <input type="text" id="answer" class="form-control mb-2" placeholder="">
-            <button type="button" class="btn btn-primary" onclick="checkAnswer()">Submit</button>
-      
 
-        </div>
-        
-        <div class="history-container">
-            
-            <div id="history"></div>
-        </div>
+<body class="p-4">
+  <div class="flex">
+    <!-- Quiz Section -->
+    <div class="w-1/2 p-4">
+      <h1 class="text-xl mb-4">Hiragana Quiz</h1>
+      <div id="quiz-section">
+        <div id="question" class="text-2xl mb-4"></div>
+        <input type="text" id="answer-input" class="w-full p-2 bg-gray-700 border border-gray-600 rounded" autofocus>
+      </div>
     </div>
+    <!-- History Section -->
+    <div class="w-1/2 p-4">
+      <h1 class="text-xl mb-4">History</h1>
+      <div id="history-section"></div>
+    </div>
+  </div>
+  <!-- Hiragana Chart -->
+  <div class="mt-4">
+    <button onclick="toggleChart()" class="bg-gray-800 p-2 rounded">Toggle Hiragana Chart</button>
+    <div id="chart" class="hidden mt-4">
+      <table class="w-full border-collapse border border-gray-600">
+        <thead>
+          <tr>
+            <th class="border border-gray-600 p-2"></th>
+            <th class="border border-gray-600 p-2">a</th>
+            <th class="border border-gray-600 p-2">i</th>
+            <th class="border border-gray-600 p-2">u</th>
+            <th class="border border-gray-600 p-2">e</th>
+            <th class="border border-gray-600 p-2">o</th>
+          </tr>
+        </thead>
+        <tbody id="chart-body">
+          <!-- Chart rows will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-    <script>
-        const quizData = {
-            "Question": [
-                "あ", "い", "う", "え", "お",
-                "か", "き", "く", "け", "こ",
-                "さ", "し", "す", "せ", "そ",
-                "た", "ち", "つ", "て", "と",
-                "な", "に", "ぬ", "ね", "の",
-                "は", "ひ", "ふ", "へ", "ほ",
-                "ま", "み", "む", "め", "も",
-                "や", "ゆ", "よ",
-                "ら", "り", "る", "れ", "ろ",
-                "わ", "を"
-            ],
-            "Answer": [
-                "a", "i", "u", "e", "o",
-                "ka", "ki", "ku", "ke", "ko",
-                "sa", "shi", "su", "se", "so",
-                "ta", "chi", "tsu", "te", "to",
-                "na", "ni", "nu", "ne", "no",
-                "ha", "hi", "fu", "he", "ho",
-                "ma", "mi", "mu", "me", "mo",
-                "ya", "yu", "yo",
-                "ra", "ri", "ru", "re", "ro",
-                "wa", "wo"
-            ]
-        };
+  <script>
+    const data = {
+      "Question": [
+        "あ", "い", "う", "え", "お",
+        "か", "き", "く", "け", "こ",
+        "さ", "し", "す", "せ", "そ",
+        "た", "ち", "つ", "て", "と",
+        "な", "に", "ぬ", "ね", "の",
+        "は", "ひ", "ふ", "へ", "ほ",
+        "ま", "み", "む", "め", "も",
+        "や", "ゆ", "よ",
+        "ら", "り", "る", "れ", "ろ",
+        "わ", "を"
+      ],
+      "Answer": [
+        "a", "i", "u", "e", "o",
+        "ka", "ki", "ku", "ke", "ko",
+        "sa", "shi", "su", "se", "so",
+        "ta", "chi", "tsu", "te", "to",
+        "na", "ni", "nu", "ne", "no",
+        "ha", "hi", "fu", "he", "ho",
+        "ma", "mi", "mu", "me", "mo",
+        "ya", "yu", "yo",
+        "ra", "ri", "ru", "re", "ro",
+        "wa", "wo"
+      ]
+    };
 
-        let currentQuestion;
-        let correctCount = 0;
-        let totalCount = 0;
-        let history = [];
+    const rows = ['a', 'ka', 'sa', 'ta', 'na', 'ha', 'ma', 'ya', 'ra', 'wa'];
+    const rowMapping = {
+      'a': [0, 1, 2, 3, 4],
+      'ka': [5, 6, 7, 8, 9],
+      'sa': [10, 11, 12, 13, 14],
+      'ta': [15, 16, 17, 18, 19],
+      'na': [20, 21, 22, 23, 24],
+      'ha': [25, 26, 27, 28, 29],
+      'ma': [30, 31, 32, 33, 34],
+      'ya': [35, 36, 37],
+      'ra': [38, 39, 40, 41, 42],
+      'wa': [43, 44]
+    };
 
-        function nextQuestion() {
-            const index = Math.floor(Math.random() * quizData.Question.length);
-            currentQuestion = {
-                hiragana: quizData.Question[index],
-                romaji: quizData.Answer[index]
-            };
-            document.getElementById('question').textContent = currentQuestion.hiragana;
-            document.getElementById('answer').value = '';
-            document.getElementById('result').textContent = '';
-            document.getElementById('answer').focus(); // Auto-focus the input field
-        }
+    let currentQuestionIndex = 0;
+    const history = [];
 
-        function checkAnswer() {
-            const userAnswer = document.getElementById('answer').value.toLowerCase().trim();
-            const correctAnswer = currentQuestion.romaji.toLowerCase();
+    function getRandomIndex() {
+      return Math.floor(Math.random() * data.Question.length);
+    }
 
-            totalCount++;
-            let isCorrect = false;
-            if (userAnswer === correctAnswer) {
-                correctCount++;
-                isCorrect = true;
-            } else {
-               
+    function setNextQuestion() {
+      currentQuestionIndex = getRandomIndex();
+      document.getElementById('question').innerText = data.Question[currentQuestionIndex];
+      document.getElementById('answer-input').value = '';
+      document.getElementById('answer-input').focus();
+    }
 
-            }
+    function updateHistory(userInput) {
+      const question = data.Question[currentQuestionIndex];
+      const correctAnswer = data.Answer[currentQuestionIndex];
+      const isCorrect = userInput === correctAnswer;
 
+      history.unshift({
+        question,
+        correctAnswer,
+        userInput,
+        isCorrect
+      });
 
+      if (history.length > 5) {
+        history.pop();
+      }
 
-            history.unshift({
-                question: currentQuestion.hiragana,
-                userAnswer: userAnswer,
-                correctAnswer: correctAnswer,
-                isCorrect: isCorrect
-            });
+      const historySection = document.getElementById('history-section');
+      historySection.innerHTML = '';
+      history.forEach(record => {
+        const recordElement = document.createElement('div');
+        recordElement.classList.add(record.isCorrect ? 'correct' : 'incorrect');
+        const icon = record.isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
+        recordElement.innerHTML = `${icon} ${record.question} - ${record.correctAnswer} __ ${record.userInput}`;
+        historySection.appendChild(recordElement);
+      });
+    }
 
-            if (history.length > 5) {
-                history.pop();
-            }
+    document.getElementById('answer-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const userInput = e.target.value.trim();
+        updateHistory(userInput);
+        setTimeout(() => {
+          setNextQuestion();
+        }, 500);
+      }
+    });
 
-            updateHistory();
+    function toggleChart() {
+      const chart = document.getElementById('chart');
+      chart.classList.toggle('hidden');
+    }
 
-            setTimeout(nextQuestion, 100);
-        }
+    function loadChart() {
+      const chartBody = document.getElementById('chart-body');
+      rows.forEach(row => {
+        const rowElement = document.createElement('tr');
+        const rowHeader = document.createElement('td');
+        rowHeader.classList.add('border', 'border-gray-600', 'p-2');
+        rowHeader.innerText = row;
+        rowElement.appendChild(rowHeader);
 
-        function updateHistory() {
-            const historyElement = document.getElementById('history');
-            historyElement.innerHTML = '';
-            history.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'history-item';
-                itemElement.innerHTML = `
-                    <span>${item.question}</span>
-                    <span class="${item.isCorrect ? 'correct' : 'incorrect'}">
-                        ${item.userAnswer} ${item.isCorrect ? '✓' : '✗'} (${item.correctAnswer})
-                    </span>
-                `;
-                historyElement.appendChild(itemElement);
-            });
-        }
-
-        // Add event listener for Enter key
-        document.getElementById('answer').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                checkAnswer();
-            }
+        rowMapping[row].forEach(index => {
+          if (index < data.Question.length) {
+            const cell = document.createElement('td');
+            cell.classList.add('border', 'border-gray-600', 'p-2', 'chart-cell');
+            cell.innerHTML = `${data.Question[index]}<br><small>${data.Answer[index]}</small>`;
+            rowElement.appendChild(cell);
+          } else {
+            const emptyCell = document.createElement('td');
+            emptyCell.classList.add('border', 'border-gray-600', 'p-2');
+            rowElement.appendChild(emptyCell);
+          }
         });
 
-        nextQuestion();
-    </script>
+        chartBody.appendChild(rowElement);
+      });
+    }
+
+    window.onload = function () {
+      setNextQuestion();
+      loadChart();
+    };
+  </script>
 </body>
+
 </html>

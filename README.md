@@ -13,6 +13,7 @@ Section & Function:
 	1.1 Show random Hiragana and ask the user to answer romaji
 	1.2 auto switch to next question after 500ms, Auto turn in focused state on input field too
 	1.3 user can press "Enter" to submit 
+	1.4 Score count, count how many correct of total
 2. History section
 	2.1 log 5 record about question & right answer & what user input
 	2.2 answer correct, show green tick icon, if no, show red cross icon, use Font Awesome framework

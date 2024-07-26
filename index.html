@@ -30,6 +30,10 @@
       display: block;
       font-size: 1rem;
     }
+
+    .incorrect-cell {
+      background-color: #f56565;
+    }
   </style>
 </head>
 
@@ -56,7 +60,6 @@
       <table class="w-full border-collapse border border-gray-600">
         <thead>
           <tr>
-            <th class="border border-gray-600 p-2"></th>
             <th class="border border-gray-600 p-2">a</th>
             <th class="border border-gray-600 p-2">i</th>
             <th class="border border-gray-600 p-2">u</th>
@@ -153,6 +156,10 @@
         const icon = record.isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
         recordElement.innerHTML = `${icon} ${record.question} - ${record.correctAnswer} __ ${record.userInput}`;
         historySection.appendChild(recordElement);
+
+        if (!record.isCorrect) {
+          highlightIncorrectAnswer(record.question);
+        }
       });
 
       totalQuestions++;
@@ -185,14 +192,11 @@
       const chartBody = document.getElementById('chart-body');
       rows.forEach(row => {
         const rowElement = document.createElement('tr');
-        const rowHeader = document.createElement('td');
-        rowHeader.classList.add('border', 'border-gray-600', 'p-2');
-        rowHeader.innerText = row;
-        rowElement.appendChild(rowHeader);
 
         rowMapping[row].forEach(index => {
           if (index < data.Question.length) {
             const cell = document.createElement('td');
+            cell.id = `chart-cell-${index}`;
             cell.classList.add('border', 'border-gray-600', 'p-2', 'chart-cell');
             cell.innerHTML = `${data.Question[index]}<br><small>${data.Answer[index]}</small>`;
             rowElement.appendChild(cell);
@@ -205,6 +209,16 @@
 
         chartBody.appendChild(rowElement);
       });
+    }
+
+    function highlightIncorrectAnswer(question) {
+      const index = data.Question.indexOf(question);
+      if (index !== -1) {
+        const cell = document.getElementById(`chart-cell-${index}`);
+        if (cell) {
+          cell.classList.add('incorrect-cell');
+        }
+      }
     }
 
     window.onload = function () {

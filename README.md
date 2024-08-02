@@ -22,9 +22,10 @@ Section & Function:
 3. Chart section
 	3.1 Make this section collapse
 	3.2 make a table chart of matching Hiragana & romaji
-	3.3 The layout organizes the characters by row (go) and column (i, u, e, o).
-	3.4 Each cell contains the Hiragana character and its romaji in parentheses in two lines, Hiragana and dakuten is bigger font size, and also aligned center.
+	3.3 The layout organizes the characters by row (go) and column (i, u, e, o)
+	3.4 Each cell contains the Hiragana character and its romaji in parentheses in two lines, Hiragana and dakuten is bigger font size, and also aligned center
 
 Layout:
 1. Make the Quiz section & History section in the same row & side by side
 2. Hiragana chart and dakuten chart below as new row
+

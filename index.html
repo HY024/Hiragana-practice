@@ -30,10 +30,6 @@
       display: block;
       font-size: 1rem;
     }
-
-    .incorrect-cell {
-      background-color: #f56565;
-    }
   </style>
 </head>
 
@@ -71,6 +67,22 @@
           <!-- Chart rows will be inserted here -->
         </tbody>
       </table>
+      <!-- Dakuten Chart -->
+      <h2 class="text-xl mt-8">Dakuten Chart</h2>
+      <table class="w-full border-collapse border border-gray-600 mt-4">
+        <thead>
+          <tr>
+            <th class="border border-gray-600 p-2">a</th>
+            <th class="border border-gray-600 p-2">i</th>
+            <th class="border border-gray-600 p-2">u</th>
+            <th class="border border-gray-600 p-2">e</th>
+            <th class="border border-gray-600 p-2">o</th>
+          </tr>
+        </thead>
+        <tbody id="dakuten-chart-body">
+          <!-- Dakuten chart rows will be inserted here -->
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -86,7 +98,13 @@
         "ま", "み", "む", "め", "も",
         "や", "ゆ", "よ",
         "ら", "り", "る", "れ", "ろ",
-        "わ", "を"
+        "わ", "を",
+        // Dakuten characters
+        "が", "ぎ", "ぐ", "げ", "ご",
+        "ざ", "じ", "ず", "ぜ", "ぞ",
+        "だ", "ぢ", "づ", "で", "ど",
+        "ば", "び", "ぶ", "べ", "ぼ",
+        "ぱ", "ぴ", "ぷ", "ぺ", "ぽ"
       ],
       "Answer": [
         "a", "i", "u", "e", "o",
@@ -98,7 +116,13 @@
         "ma", "mi", "mu", "me", "mo",
         "ya", "yu", "yo",
         "ra", "ri", "ru", "re", "ro",
-        "wa", "wo"
+        "wa", "wo",
+        // Dakuten answers
+        "ga", "gi", "gu", "ge", "go",
+        "za", "ji", "zu", "ze", "zo",
+        "da", "ji", "zu", "de", "do",
+        "ba", "bi", "bu", "be", "bo",
+        "pa", "pi", "pu", "pe", "po"
       ]
     };
 
@@ -114,6 +138,15 @@
       'ya': [35, 36, 37],
       'ra': [38, 39, 40, 41, 42],
       'wa': [43, 44]
+    };
+
+    const dakutenRows = ['ga', 'za', 'da', 'ba', 'pa'];
+    const dakutenRowMapping = {
+      'ga': [45, 46, 47, 48, 49],
+      'za': [50, 51, 52, 53, 54],
+      'da': [55, 56, 57, 58, 59],
+      'ba': [60, 61, 62, 63, 64],
+      'pa': [65, 66, 67, 68, 69]
     };
 
     let currentQuestionIndex = 0;
@@ -156,10 +189,6 @@
         const icon = record.isCorrect ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
         recordElement.innerHTML = `${icon} ${record.question} - ${record.correctAnswer} __ ${record.userInput}`;
         historySection.appendChild(recordElement);
-
-        if (!record.isCorrect) {
-          highlightIncorrectAnswer(record.question);
-        }
       });
 
       totalQuestions++;
@@ -196,7 +225,6 @@
         rowMapping[row].forEach(index => {
           if (index < data.Question.length) {
             const cell = document.createElement('td');
-            cell.id = `chart-cell-${index}`;
             cell.classList.add('border', 'border-gray-600', 'p-2', 'chart-cell');
             cell.innerHTML = `${data.Question[index]}<br><small>${data.Answer[index]}</small>`;
             rowElement.appendChild(cell);
@@ -209,16 +237,26 @@
 
         chartBody.appendChild(rowElement);
       });
-    }
 
-    function highlightIncorrectAnswer(question) {
-      const index = data.Question.indexOf(question);
-      if (index !== -1) {
-        const cell = document.getElementById(`chart-cell-${index}`);
-        if (cell) {
-          cell.classList.add('incorrect-cell');
-        }
-      }
+      const dakutenChartBody = document.getElementById('dakuten-chart-body');
+      dakutenRows.forEach(row => {
+        const rowElement = document.createElement('tr');
+
+        dakutenRowMapping[row].forEach(index => {
+          if (index < data.Question.length) {
+            const cell = document.createElement('td');
+            cell.classList.add('border', 'border-gray-600', 'p-2', 'chart-cell');
+            cell.innerHTML = `${data.Question[index]}<br><small>${data.Answer[index]}</small>`;
+            rowElement.appendChild(cell);
+          } else {
+            const emptyCell = document.createElement('td');
+            emptyCell.classList.add('border', 'border-gray-600', 'p-2');
+            rowElement.appendChild(emptyCell);
+          }
+        });
+
+        dakutenChartBody.appendChild(rowElement);
+      });
     }
 
     window.onload = function () {
